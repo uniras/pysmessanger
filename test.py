@@ -50,7 +50,7 @@ app.layout = html.Div(
 
 
 # クエリーパラメータでDashからIframeに値を渡すサンプル
-# 非常に手軽だが、値が更新されるたびにリロードされる、Iframe側からDashに値を返すことができないという欠点がある。
+# 非常に手軽だが、値が更新されるたびにIframeがリロードされる、Iframe側からDashに値を返すことができないという制約がある
 @app.callback(
     Output("my-iframe", "src"),
     Input("my-slider", "value"),
