@@ -10,6 +10,9 @@ app = Dash()
 app.layout = html.Div(
     [
         html.H1("スライダーで数値を変更"),
+
+        # Iframeにクエリーパラメータを使って値を渡すサンプル
+        # DashのSliderコンポーネントを使って値を変更する
         dcc.Slider(
             id="my-slider",
             min=0,
@@ -23,6 +26,9 @@ app.layout = html.Div(
             src="/assets/test.html?data={}&t=0",
             style={"width": "100%", "height": "300px"},
         ),
+
+
+        # pys_messengerを使ってPostMessageで値をやり取りするサンプル
         dcc.Slider(
             id="my-slider2",
             min=0,
@@ -36,12 +42,15 @@ app.layout = html.Div(
             src="/assets/test2.html",
             style={"width": "100%", "height": "300px"},
         ),
+
+        # Iframeから受け取った値を保持するためのStoreコンポーネント
         dcc.Store(id="iframe_data", data=None),
-        # html.Div(id="dummy-output", style={"display": "none"}),
     ]
 )
 
 
+# クエリーパラメータでDashからIframeに値を渡すサンプル
+# 非常に手軽だが、値が更新されるたびにリロードされる、Iframe側からDashに値を返すことができないという欠点がある。
 @app.callback(
     Output("my-iframe", "src"),
     Input("my-slider", "value"),
@@ -52,17 +61,18 @@ def update_iframe_src(value):
     return f"/assets/test.html?data={urllib.parse.quote(json_str)}&t={timeparam}"
 
 
+# pys_messengerを使って値をIframeに送信するサンプル
 clientside_callback(
     ClientsideFunction(
         namespace="pys_sender",
         function_name="pys_send",
     ),
-    # Output("dummy-output", "children"),
     Input("my-iframe2", "id"),
     Input("my-slider2", "value"),
 )
 
 
+# pys_messengerでIframeからデータを受け取りStoreに保存された値をDashコンポーネントに反映するサンプル
 @app.callback(
     Output("my-slider2", "value"),
     Input("iframe_data", "data"),
